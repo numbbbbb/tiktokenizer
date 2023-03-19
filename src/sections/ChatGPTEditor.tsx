@@ -18,7 +18,7 @@ export function ChatGPTEditor(props: {
   const [rows, setRows] = useState<
     { role: string; message: string; name: string }[]
   >([
-    { role: "system", message: "You are a helpful assistant", name: "" },
+    { role: "system", message: "吃了么您内", name: "" },
     { role: "user", message: "", name: "" },
   ]);
 
@@ -67,11 +67,11 @@ export function ChatGPTEditor(props: {
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="user">User</SelectItem>
-                <SelectItem value="system">System</SelectItem>
-                <SelectItem value="assistant">Assistant</SelectItem>
+                <SelectItem value="user">用户</SelectItem>
+                <SelectItem value="system">系统</SelectItem>
+                <SelectItem value="assistant">助理</SelectItem>
                 <SelectSeparator />
-                <SelectItem value="system-name">Custom</SelectItem>
+                <SelectItem value="system-name">自定义</SelectItem>
               </SelectContent>
             </Select>
 
@@ -79,7 +79,7 @@ export function ChatGPTEditor(props: {
               {row.role === "system-name" && (
                 <Input
                   value={row.name}
-                  placeholder="Name"
+                  placeholder="名称"
                   onChange={(e) =>
                     setRows((rows) => {
                       const newRows = [...rows];
@@ -94,7 +94,7 @@ export function ChatGPTEditor(props: {
               <TextArea
                 rows={1}
                 value={row.message}
-                placeholder="Content"
+                placeholder="内容"
                 onChange={(e) =>
                   setRows((rows) => {
                     const newRows = [...rows];
@@ -137,7 +137,7 @@ export function ChatGPTEditor(props: {
           })
         }
       >
-        Add message
+        新增消息
       </Button>
     </div>
   );

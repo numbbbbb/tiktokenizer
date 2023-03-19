@@ -77,7 +77,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="mx-auto flex min-h-screen max-w-[1200px] flex-col gap-4 p-8">
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-          <h1 className="text-4xl font-bold">Tiktokenizer</h1>
+          <h1 className="text-4xl font-bold">Tiktokenizer - 中文版</h1>
 
           <EncoderSelect
             value={params}
@@ -117,12 +117,12 @@ const Home: NextPage = () => {
             {"model" in params &&
               (params.model === "gpt-4" || params.model === "gpt-4-32k") && (
                 <p className="text-sm text-slate-400">
-                  Based on the preliminary discoveries found in the following{" "}
+                  算法参考了这个{" "}
                   <a
                     href="https://news.ycombinator.com/item?id=34990391"
                     className="text-slate-800"
                   >
-                    Hacker News thread
+                    Hacker News 讨论
                   </a>
                   .
                 </p>
@@ -164,7 +164,16 @@ const Home: NextPage = () => {
             >
               dqbd
             </a>
-            . Created with the generous help from{" "}
+            . 由{" "}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              className="text-slate-800"
+              href="https://api2d.com/"
+            >
+              API2D
+            </a>{" "}
+            汉化 | Created with the generous help from{" "}
             <a
               target="_blank"
               rel="noreferrer"
@@ -198,14 +207,6 @@ const Home: NextPage = () => {
               href="https://github.com/dqbd/tiktokenizer"
             >
               <Github />
-            </a>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              className="text-slate-800"
-              href="https://twitter.com/__dqbd"
-            >
-              <Twitter />
             </a>
           </div>
         </div>
