@@ -43,8 +43,8 @@ const API2DP: Record<string, BN> = {
 const PToMaxToken: Record<string, BN> = {
   "gpt-4": BN("100").div(30),
   "gpt-4-32k": BN("100").div(60),
-  "gpt-3.5-turbo": BN("1"),
-  "text-embedding-ada-002": BN("5"),
+  "gpt-3.5-turbo": BN("100"),
+  "text-embedding-ada-002": BN("500"),
 };
 
 export function TokenViewer(props: {
@@ -122,7 +122,8 @@ export function TokenViewer(props: {
               )}
             </span>
             <span className="">{props.model}</span>
-            max_tokens
+            <span>tokens</span>
+            <span>余额不多的情况下，可以对照这个设置 max_tokens</span>
           </div>
         </div>
       )}
