@@ -1,8 +1,8 @@
-import { type RouterOutputs } from "~/utils/api";
 import { Fragment, useState } from "react";
 import { cn } from "~/utils/cn";
 
 import BN from "bignumber.js";
+import { Checkbox } from "~/components/Checkbox";
 
 const COLORS = [
   "bg-sky-200",
@@ -47,21 +47,40 @@ const PToMaxToken: Record<string, BN> = {
   "text-embedding-ada-002": BN("500"),
 };
 
+function encodeWhitespace(str: string) {
+  let result = str;
+
+  result = result.replaceAll(" ", "⋅");
+  result = result.replaceAll("\t", "→");
+  result = result.replaceAll("\f", "\\f\f");
+  result = result.replaceAll("\b", "\\b\b");
+  result = result.replaceAll("\v", "\\v\v");
+
+  result = result.replaceAll("\r", "\\r\r");
+  result = result.replaceAll("\n", "\\n\n");
+  result = result.replaceAll("\\r\r\\n\n", "\\r\\n\r\n");
+
+  return result;
+}
+
 export function TokenViewer(props: {
   isFetching: boolean;
   showMore: boolean;
   model: string | undefined;
-  data: { encoding: Uint32Array; segments: string[] } | undefined;
+  data:
+    | Array<{ text: string; tokens: { id: number; idx: number }[] }>
+    | undefined;
 }) {
   const [indexHover, setIndexHover] = useState<null | number>(null);
-
   const [p, setP] = useState<number>(1000);
 
-  const tokenCount = props.data?.encoding.length ?? 0;
+  const tokenCount =
+    props.data?.reduce((memo, i) => memo + i.tokens.length, 0) ?? 0;
   const pricing = props.model != null ? PRICING[props.model] : undefined;
 
   const api2dP = props.model != null ? API2DP[props.model] : undefined;
   const showMore = props.showMore;
+  const [showWhitespace, setShowWhitespace] = useState(false);
 
   return (
     <>
@@ -132,7 +151,7 @@ export function TokenViewer(props: {
 
       {showMore && (
         <pre className="min-h-[256px] max-w-[100vw] overflow-auto whitespace-pre-wrap break-all rounded-md border bg-slate-50 p-4 shadow-sm">
-          {props.data?.segments.map((i, idx) => (
+          {props.data?.map(({ text }, idx) => (
             <span
               key={idx}
               onMouseEnter={() => setIndexHover(idx)}
@@ -144,7 +163,9 @@ export function TokenViewer(props: {
                 props.isFetching && "opacity-50"
               )}
             >
-              {i}
+              {showWhitespace || indexHover === idx
+                ? encodeWhitespace(text)
+                : text}
             </span>
           ))}
         </pre>
@@ -156,7 +177,7 @@ export function TokenViewer(props: {
             "min-h-[256px] max-w-[100vw] overflow-auto whitespace-pre-wrap break-all rounded-md border bg-slate-50 p-4 shadow-sm"
           }
         >
-          {props.data && (props.data?.encoding.length ?? 0) > 0 && (
+          {props.data && tokenCount > 0 && (
             <span
               className={cn(
                 "transition-opacity",
@@ -164,25 +185,46 @@ export function TokenViewer(props: {
               )}
             >
               [
-              {[...props.data.encoding].map((id, idx) => (
-                <Fragment key={idx}>
-                  <span
-                    onMouseEnter={() => setIndexHover(idx)}
-                    onMouseLeave={() => setIndexHover(null)}
-                    className={cn(
-                      "transition-colors",
-                      indexHover === idx && COLORS[idx % COLORS.length]
-                    )}
-                  >
-                    {id}
-                  </span>
-                  {props.data && idx !== props.data.encoding.length - 1 && ", "}
+              {props.data.map((segment, segmentIdx) => (
+                <Fragment key={segmentIdx}>
+                  {segment.tokens.map((token) => (
+                    <Fragment key={token.idx}>
+                      <span
+                        onMouseEnter={() => setIndexHover(segmentIdx)}
+                        onMouseLeave={() => setIndexHover(null)}
+                        className={cn(
+                          "transition-colors",
+                          indexHover === segmentIdx &&
+                            COLORS[segmentIdx % COLORS.length]
+                        )}
+                      >
+                        {token.id}
+                      </span>
+                      <span className="last-of-type:hidden">{", "}</span>
+                    </Fragment>
+                  ))}
                 </Fragment>
               ))}
               ]
             </span>
           )}
         </pre>
+      )}
+
+      {showMore && (
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="terms"
+            checked={showWhitespace}
+            onClick={() => setShowWhitespace((v) => !v)}
+          />
+          <label
+            htmlFor="terms"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            显示空白字符
+          </label>
+        </div>
       )}
     </>
   );
