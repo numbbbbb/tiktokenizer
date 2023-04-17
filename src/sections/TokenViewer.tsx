@@ -49,6 +49,7 @@ const PToMaxToken: Record<string, BN> = {
 
 export function TokenViewer(props: {
   isFetching: boolean;
+  showMore: boolean;
   model: string | undefined;
   data: { encoding: Uint32Array; segments: string[] } | undefined;
 }) {
@@ -60,6 +61,7 @@ export function TokenViewer(props: {
   const pricing = props.model != null ? PRICING[props.model] : undefined;
 
   const api2dP = props.model != null ? API2DP[props.model] : undefined;
+  const showMore = props.showMore;
 
   return (
     <>
@@ -128,56 +130,60 @@ export function TokenViewer(props: {
         </div>
       )}
 
-      <pre className="min-h-[256px] max-w-[100vw] overflow-auto whitespace-pre-wrap break-all rounded-md border bg-slate-50 p-4 shadow-sm">
-        {props.data?.segments.map((i, idx) => (
-          <span
-            key={idx}
-            onMouseEnter={() => setIndexHover(idx)}
-            onMouseLeave={() => setIndexHover(null)}
-            className={cn(
-              "transition-all",
-              (indexHover == null || indexHover === idx) &&
-                COLORS[idx % COLORS.length],
-              props.isFetching && "opacity-50"
-            )}
-          >
-            {i}
-          </span>
-        ))}
-      </pre>
+      {showMore && (
+        <pre className="min-h-[256px] max-w-[100vw] overflow-auto whitespace-pre-wrap break-all rounded-md border bg-slate-50 p-4 shadow-sm">
+          {props.data?.segments.map((i, idx) => (
+            <span
+              key={idx}
+              onMouseEnter={() => setIndexHover(idx)}
+              onMouseLeave={() => setIndexHover(null)}
+              className={cn(
+                "transition-all",
+                (indexHover == null || indexHover === idx) &&
+                  COLORS[idx % COLORS.length],
+                props.isFetching && "opacity-50"
+              )}
+            >
+              {i}
+            </span>
+          ))}
+        </pre>
+      )}
 
-      <pre
-        className={
-          "min-h-[256px] max-w-[100vw] overflow-auto whitespace-pre-wrap break-all rounded-md border bg-slate-50 p-4 shadow-sm"
-        }
-      >
-        {props.data && (props.data?.encoding.length ?? 0) > 0 && (
-          <span
-            className={cn(
-              "transition-opacity",
-              props.isFetching && "opacity-50"
-            )}
-          >
-            [
-            {[...props.data.encoding].map((id, idx) => (
-              <Fragment key={idx}>
-                <span
-                  onMouseEnter={() => setIndexHover(idx)}
-                  onMouseLeave={() => setIndexHover(null)}
-                  className={cn(
-                    "transition-colors",
-                    indexHover === idx && COLORS[idx % COLORS.length]
-                  )}
-                >
-                  {id}
-                </span>
-                {props.data && idx !== props.data.encoding.length - 1 && ", "}
-              </Fragment>
-            ))}
-            ]
-          </span>
-        )}
-      </pre>
+      {showMore && (
+        <pre
+          className={
+            "min-h-[256px] max-w-[100vw] overflow-auto whitespace-pre-wrap break-all rounded-md border bg-slate-50 p-4 shadow-sm"
+          }
+        >
+          {props.data && (props.data?.encoding.length ?? 0) > 0 && (
+            <span
+              className={cn(
+                "transition-opacity",
+                props.isFetching && "opacity-50"
+              )}
+            >
+              [
+              {[...props.data.encoding].map((id, idx) => (
+                <Fragment key={idx}>
+                  <span
+                    onMouseEnter={() => setIndexHover(idx)}
+                    onMouseLeave={() => setIndexHover(null)}
+                    className={cn(
+                      "transition-colors",
+                      indexHover === idx && COLORS[idx % COLORS.length]
+                    )}
+                  >
+                    {id}
+                  </span>
+                  {props.data && idx !== props.data.encoding.length - 1 && ", "}
+                </Fragment>
+              ))}
+              ]
+            </span>
+          )}
+        </pre>
+      )}
     </>
   );
 }

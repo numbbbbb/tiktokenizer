@@ -17,11 +17,7 @@ export function ChatGPTEditor(props: {
 }) {
   const [rows, setRows] = useState<
     { role: string; message: string; name: string }[]
-  >([
-    { role: "system", message: "假设你是一位英语老师，你需要帮我纠正我的语法错误", name: "" },
-    { role: "user", message: "I like drink coffee，这句英语有什么错误？", name: "" },
-    { role: "assistant", message: '这句英语中有一个错误。正确的写法应该是：\n"I like to drink coffee."\n在这个句子中，动词"like"后应该接不定式动词"to drink"，而不是直接接动词"drink"。', name: "" },
-  ]);
+  >([{ role: "assistant", message: "把你要检测的文字填入这里", name: "" }]);
 
   const changeRef = useRef<(value: string) => void>(props.onChange);
 
